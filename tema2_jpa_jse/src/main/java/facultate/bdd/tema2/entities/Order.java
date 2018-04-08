@@ -1,18 +1,30 @@
 package facultate.bdd.tema2.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/** TODO: Transform this class into a JPA entity **/
+@Entity
+@Table(name="\"Orders\"")
 public class Order {
 	
 	//properties
+	@Id
+	@GeneratedValue
+	@Column(name="\"id\"")
 	private Integer id;
+	
+	@Column(name="\"date\"")
 	private Date date;
+	
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@JoinColumn(name="\"buyer_id\"")
 	private Buyer buyer; //EAGER
+	
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, 
+	        mappedBy = "order", orphanRemoval = true)
 	private List<OrderEntry> orderEntries = new ArrayList<OrderEntry>(); //EAGER
 	
 	//constructors
@@ -50,8 +62,5 @@ public class Order {
 	public void setOrderEntries(List<OrderEntry> orderEntries) {
 		this.orderEntries = orderEntries;
 	}
-	
-	
-	
-	
+		
 }

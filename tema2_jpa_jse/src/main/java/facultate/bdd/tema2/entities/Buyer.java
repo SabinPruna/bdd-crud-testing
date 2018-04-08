@@ -1,17 +1,27 @@
 package facultate.bdd.tema2.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/** TODO: Transform this class into a JPA entity **/
+@Entity
+@Table(name="\"Buyers\"")
 public class Buyer {
 
-	// properties
+	@Id
+	@GeneratedValue
+	@Column(name="\"id\"")
 	private Integer id;
+	
+	@Column(name="\"name\"")
 	private String name;
+	
+	@Column(name="\"age\"")
 	private Integer age;
+	
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, 
+	        mappedBy = "buyer", orphanRemoval = true)
 	private List<Order> orders = new ArrayList<Order>(); // EAGER
 
 	// constructors

@@ -3,18 +3,42 @@ package facultate.bdd.tema2.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
-/** TODO: Transform this class into a JPA entity **/
+@Entity
+@Table(name="\"Books\"")
 public class Book {
 	
-	//properties
+	@Id
+	@GeneratedValue
+	@Column(name="\"id\"")
 	private Integer id;
+	
+	@Column(name="\"name\"")
 	private String name;
+	
+	@Column(name="\"author\"")
 	private String author;
 	
+	@ManyToMany(fetch = FetchType.EAGER,cascade = 
+        {CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "book_genre",
+        joinColumns = {
+            @JoinColumn(
+                name = "book_id", 
+                referencedColumnName = "id"
+            )
+        },
+        inverseJoinColumns = {
+            @JoinColumn(
+                name = "genre_id", 
+                referencedColumnName = "id"
+            )
+        })
+	@Column(name="\"genres\"")
 	private List<Genre> genres = new ArrayList<Genre>(); //EAGER
 	
+	@Column(name="\"price\"")
 	private Double price;
 		
 	//constructors
@@ -66,8 +90,5 @@ public class Book {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	
-	
-	
-	
+
 }

@@ -1,13 +1,23 @@
 package facultate.bdd.tema2.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
-/** TODO: Transform this class into a JPA entity **/
+@Entity
+@Table(name="\"OrderEntries\"")
 public class OrderEntry {
 	//properties
+	@Id
+	@GeneratedValue
+	@Column(name="\"id\"")
 	private int id;
+	
+	@ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	private Order order; //LAZY
+	
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private Book book; //EAGER
+	
+	@Column(name="\"quantity\"")
 	private Integer quantity;
 	
 	//constructors

@@ -3,15 +3,22 @@ package facultate.bdd.tema2.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
-/** TODO: Transform this class into a JPA entity **/
+@Entity
+@Table(name="\"Genres\"")
 public class Genre {
 	
-	//properties
+	@Id
+	@GeneratedValue
+	@Column(name="\"id\"")
 	private Integer id;
+	
+	@Column(name="\"name\"", unique=true)
 	private String name;
 	
+	@ManyToMany(fetch=FetchType.LAZY, mappedBy = "genres", 
+		    cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private List<Book> books = new ArrayList<Book>(); //LAZY
 	
 	//constructors
@@ -45,7 +52,5 @@ public class Genre {
 	public void setBooks(List<Book> books) {
 		this.books = books;
 	}
-	
-	
 	
 }
