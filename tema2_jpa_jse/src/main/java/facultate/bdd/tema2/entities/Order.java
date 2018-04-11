@@ -7,30 +7,30 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="\"Orders\"")
+@Table(name = "\"Orders\"")
 public class Order {
-	
-	//properties
+
+	// properties
 	@Id
 	@GeneratedValue
-	@Column(name="\"id\"")
+	@Column(name = "\"id\"")
 	private Integer id;
-	
-	@Column(name="\"date\"")
-	private Date date;
-	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-	@JoinColumn(name="\"buyer_id\"")
-	private Buyer buyer; //EAGER
-	
-	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, 
-	        mappedBy = "order", orphanRemoval = true)
-	private List<OrderEntry> orderEntries = new ArrayList<OrderEntry>(); //EAGER
-	
-	//constructors
-	public Order() {}
 
-	//getters and setters
+	@Column(name = "\"date\"")
+	private Date date;
+
+	@ManyToOne(fetch=FetchType.EAGER, cascade= {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinColumn(name="\"buyer_id\"")
+	private Buyer buyer; // EAGER
+
+	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "order", orphanRemoval = true)
+	private List<OrderEntry> orderEntries = new ArrayList<OrderEntry>(); // EAGER
+
+	// constructors
+	public Order() {
+	}
+
+	// getters and setters
 	public Integer getId() {
 		return id;
 	}
@@ -62,5 +62,5 @@ public class Order {
 	public void setOrderEntries(List<OrderEntry> orderEntries) {
 		this.orderEntries = orderEntries;
 	}
-		
+
 }

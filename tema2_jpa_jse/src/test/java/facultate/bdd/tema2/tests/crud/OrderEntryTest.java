@@ -140,5 +140,6 @@ public class OrderEntryTest {
 	@AfterClass
 	public static void cleanup() {
 		orderEntryDao.close();
+		orderDao.close();
 	}
 }

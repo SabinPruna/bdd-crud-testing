@@ -20,7 +20,7 @@ public class Buyer {
 	@Column(name="\"age\"")
 	private Integer age;
 	
-	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL, 
+	@OneToMany(fetch=FetchType.EAGER, 
 	        mappedBy = "buyer", orphanRemoval = true)
 	private List<Order> orders = new ArrayList<Order>(); // EAGER
 

@@ -14,7 +14,7 @@ public class Genre {
 	@Column(name="\"id\"")
 	private Integer id;
 	
-	@Column(name="\"name\"", unique=true)
+	@Column(name="\"name\"")
 	private String name;
 	
 	@ManyToMany(fetch=FetchType.LAZY, mappedBy = "genres", 

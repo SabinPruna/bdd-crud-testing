@@ -11,10 +11,10 @@ public class OrderEntry {
 	@Column(name="\"id\"")
 	private int id;
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Order order; //LAZY
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.EAGER, cascade= {CascadeType.PERSIST, CascadeType.MERGE})
 	private Book book; //EAGER
 	
 	@Column(name="\"quantity\"")

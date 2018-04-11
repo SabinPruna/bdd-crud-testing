@@ -21,7 +21,6 @@ public class GenreDAOImpl implements facultate.bdd.tema2.dao.interfaces.GenreDAO
 		emFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
 	}
 
-	
 	@Override
 	public void close() {
 		emFactory.close();
@@ -35,8 +34,9 @@ public class GenreDAOImpl implements facultate.bdd.tema2.dao.interfaces.GenreDAO
 				entityManager.getTransaction().begin();
 				entityManager.persist(entity);
 				entityManager.getTransaction().commit();
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 				entityManager.getTransaction().rollback();
+
 				entityManager.getTransaction().begin();
 				entity = entityManager.merge(entity);
 				entityManager.getTransaction().commit();
@@ -87,7 +87,7 @@ public class GenreDAOImpl implements facultate.bdd.tema2.dao.interfaces.GenreDAO
 		try {
 			entityManager = emFactory.createEntityManager();
 			entityManager.getTransaction().begin();
-			entity=entityManager.find(Genre.class, entity.getId());
+			entity = entityManager.find(Genre.class, entity.getId());
 			entityManager.remove(entity);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
@@ -101,7 +101,7 @@ public class GenreDAOImpl implements facultate.bdd.tema2.dao.interfaces.GenreDAO
 	@Override
 	public void deleteAll() {
 		try {
-			for(Genre g: readAll()) {
+			for (Genre g : readAll()) {
 				delete(g);
 			}
 		} catch (Exception ex) {

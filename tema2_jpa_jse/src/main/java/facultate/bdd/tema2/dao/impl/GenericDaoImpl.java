@@ -1,25 +1,22 @@
 package facultate.bdd.tema2.dao.impl;
 
-import java.util.List;
+import facultate.bdd.tema2.dao.interfaces.GenericDAO;
+
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import java.lang.reflect.Method;
+import java.util.List;
 
-import facultate.bdd.tema2.entities.Book;
-import facultate.bdd.tema2.entities.Order;
-import facultate.bdd.tema2.entities.OrderEntry;
-
-public class OrderEntryDAOImpl implements facultate.bdd.tema2.dao.interfaces.OrderEntryDAO {
+public class GenericDaoImpl<T> implements GenericDAO<T> {
 	public EntityManagerFactory emFactory;
 	public EntityManager entityManager;
+	public Class<T> type;
 
-	public OrderEntryDAOImpl(String persistenceUnitName) {
+	public GenericDaoImpl(String persistenceUnitName, Class<T> type) {
 		emFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+		this.type = type;
 	}
 
 	@Override
@@ -28,19 +25,12 @@ public class OrderEntryDAOImpl implements facultate.bdd.tema2.dao.interfaces.Ord
 	}
 
 	@Override
-	public OrderEntry createOrUpdate(OrderEntry entity) {
+	public T createOrUpdate(T entity) {
 		try {
 			entityManager = emFactory.createEntityManager();
-			try {
-				entityManager.getTransaction().begin();
-				entityManager.persist(entity);
-				entityManager.getTransaction().commit();
-			} catch (Exception ex) {
-				entityManager.getTransaction().rollback();
-				entityManager.getTransaction().begin();
-				entity = entityManager.merge(entity);
-				entityManager.getTransaction().commit();
-			}
+			entityManager.getTransaction().begin();
+			entityManager.persist(entity);
+			entityManager.getTransaction().commit();
 			return entity;
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
@@ -52,10 +42,10 @@ public class OrderEntryDAOImpl implements facultate.bdd.tema2.dao.interfaces.Ord
 	}
 
 	@Override
-	public OrderEntry findById(int id) {
+	public T findById(int id) {
 		try {
 			entityManager = emFactory.createEntityManager();
-			return entityManager.find(OrderEntry.class, id);
+			return entityManager.find(type, id);
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			return null;
@@ -65,7 +55,7 @@ public class OrderEntryDAOImpl implements facultate.bdd.tema2.dao.interfaces.Ord
 	}
 
 	@Override
-	public OrderEntry update(OrderEntry entity) {
+	public T update(T entity) {
 		try {
 			entityManager = emFactory.createEntityManager();
 			entityManager.getTransaction().begin();
@@ -82,11 +72,13 @@ public class OrderEntryDAOImpl implements facultate.bdd.tema2.dao.interfaces.Ord
 	}
 
 	@Override
-	public void delete(OrderEntry entity) {
+	public void delete(T entity) {
 		try {
+			Method method = type.getDeclaredMethod("getId");
+
 			entityManager = emFactory.createEntityManager();
 			entityManager.getTransaction().begin();
-			entity = entityManager.find(OrderEntry.class, entity.getId());
+			entity = entityManager.find(type, method.invoke(entity));
 			entityManager.remove(entity);
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
@@ -100,8 +92,8 @@ public class OrderEntryDAOImpl implements facultate.bdd.tema2.dao.interfaces.Ord
 	@Override
 	public void deleteAll() {
 		try {
-			for (OrderEntry oe : readAll()) {
-				delete(oe);
+			for (T b : readAll()) {
+				delete(b);
 			}
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
@@ -109,10 +101,12 @@ public class OrderEntryDAOImpl implements facultate.bdd.tema2.dao.interfaces.Ord
 	}
 
 	@Override
-	public List<OrderEntry> readAll() {
+	public List<T> readAll() {
 		try {
-			entityManager = emFactory.createEntityManager();
-			return entityManager.createQuery("from OrderEntry", OrderEntry.class).getResultList();
+			entityManager.getTransaction().begin();
+			String entityName = type.toString();
+			List<T> result = entityManager.createQuery("from " + entityName, type).getResultList();
+			return result;
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			return null;

@@ -36,6 +36,7 @@ public class BuyerDAOImpl implements facultate.bdd.tema2.dao.interfaces.BuyerDAO
 				entityManager.getTransaction().commit();
 			} catch (Exception ex) {
 				entityManager.getTransaction().rollback();
+
 				entityManager.getTransaction().begin();
 				entity = entityManager.merge(entity);
 				entityManager.getTransaction().commit();

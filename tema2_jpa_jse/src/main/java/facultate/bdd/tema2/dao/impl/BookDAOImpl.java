@@ -27,7 +27,30 @@ public class BookDAOImpl implements facultate.bdd.tema2.dao.interfaces.BookDAO {
 
 	@Override
 	public Book createOrUpdate(Book entity) {
-		try {
+		
+		  try {
+	            entityManager = emFactory.createEntityManager();
+	            try {
+	                entityManager.getTransaction().begin();
+	                entityManager.persist(entity);
+	                entityManager.getTransaction().commit();
+	            } catch(Exception ex) {
+	                entityManager.getTransaction().rollback();
+	                entityManager.getTransaction().begin();
+	                entity = entityManager.merge(entity);
+	                entityManager.getTransaction().commit();
+	            }
+	            return entity;
+	        } catch (Exception ex) {
+	            System.out.println(ex.getMessage());
+	            entityManager.getTransaction().rollback();
+	            return null;
+	        } finally {
+	            entityManager.close();
+	        }
+	}
+	
+		/*try {
 			entityManager = emFactory.createEntityManager();
 			entityManager.getTransaction().begin();
 
@@ -38,12 +61,16 @@ public class BookDAOImpl implements facultate.bdd.tema2.dao.interfaces.BookDAO {
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 			entityManager.getTransaction().rollback();
+
+			entityManager.getTransaction().begin();
+			entity = entityManager.merge(entity);
+			entityManager.getTransaction().commit();
 			return null;
 		} finally {
 			entityManager.close();
 		}
 	}
-
+*/
 	@Override
 	public Book findById(int id) {
 		try {
@@ -82,10 +109,10 @@ public class BookDAOImpl implements facultate.bdd.tema2.dao.interfaces.BookDAO {
 		try {
 			entityManager = emFactory.createEntityManager();
 			entityManager.getTransaction().begin();
-			
-			entity = entityManager.find(Book.class, entity.getId());		
+
+			entity = entityManager.find(Book.class, entity.getId());
 			entityManager.remove(entity);
-			
+
 			entityManager.getTransaction().commit();
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
